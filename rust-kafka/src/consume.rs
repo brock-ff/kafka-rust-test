@@ -1,3 +1,4 @@
+use crate::encode::decode;
 use kafka::consumer::{Consumer, FetchOffset, GroupOffsetStorage};
 
 pub fn consume() {
@@ -13,8 +14,9 @@ pub fn consume() {
         for ms in consumer.poll().unwrap().iter() {
             for m in ms.messages() {
                 println!("{:?}", m);
+                println!("{:?}", decode(m.value));
             }
-            consumer.consume_messageset(ms);
+            let _ = consumer.consume_messageset(ms);
         }
         consumer.commit_consumed().unwrap();
         println!("queue is empty...");

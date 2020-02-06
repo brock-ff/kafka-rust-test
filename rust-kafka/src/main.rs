@@ -1,5 +1,6 @@
 // run both a consumer and a producer (?)
 mod consume;
+mod encode;
 mod produce;
 
 use consume::consume;
@@ -9,7 +10,7 @@ use std::thread;
 fn main() {
     println!("Hello, world!");
     thread::spawn(move || loop {
-        thread::sleep_ms(1000);
+        thread::sleep(std::time::Duration::from_millis(1000));
         produce();
     });
     consume();

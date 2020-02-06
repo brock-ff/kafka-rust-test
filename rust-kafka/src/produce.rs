@@ -1,5 +1,8 @@
+extern crate rand;
+
+use crate::encode::encode;
 use kafka::producer::{Producer, Record, RequiredAcks};
-use std::fmt::Write;
+use rand::Rng;
 use std::time::Duration;
 
 pub fn produce() {
@@ -9,13 +12,15 @@ pub fn produce() {
         .create()
         .unwrap();
 
+    // get random number
+    let mut rng = rand::thread_rng();
+    let v: u8 = rng.gen();
+    println!("v: {}", v);
+
+    println!("producing message...");
+
     let mut buf = String::with_capacity(2);
-    for i in 0..10 {
-        println!("producing message...");
-        let _ = write!(&mut buf, "{}", i); // some computation of the message data to be sent
-        producer
-            .send(&Record::from_value("test", buf.as_bytes()))
-            .unwrap();
-        buf.clear();
-    }
+    let val = encode(v, &mut buf);
+    producer.send(&Record::from_value("test", val)).unwrap();
+    buf.clear();
 }
