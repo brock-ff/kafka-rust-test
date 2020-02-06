@@ -54,3 +54,5 @@ Contains functions which are used for serializing (`encode`) and deserializing (
 ### `common.rs`
 
 Just responsible for holding host info for connecting to kafka.
+
+> Note: Change `IP` manually after running the dockerized kafka system. We can't use `localhost` here for some reason.
