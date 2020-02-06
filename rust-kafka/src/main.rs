@@ -1,5 +1,7 @@
 // run both a consumer and a producer (?)
+mod common;
 mod consume;
+mod data;
 mod encode;
 mod produce;
 

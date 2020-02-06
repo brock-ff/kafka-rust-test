@@ -1,3 +1,5 @@
-echo "make sure you've changed KAFKA_ADVERTISED_HOST_NAME in `docker-compose-single-broker.yml` to match your own local IP (not localhost)."
+HOST=$(ipconfig getifaddr en0)
+echo "Running kafka on $HOST:9092"
+sleep 1.5
 
-docker-compose -f docker-compose-single-broker.yml up
+LOCALHOST=$HOST docker-compose -f docker-compose-single-broker.yml up

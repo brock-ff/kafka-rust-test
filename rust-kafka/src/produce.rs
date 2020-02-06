@@ -1,26 +1,24 @@
 extern crate rand;
 
-use crate::encode::encode;
+use crate::{
+    common::{get_host, TOPIC},
+    data::Data,
+    encode::encode,
+};
 use kafka::producer::{Producer, Record, RequiredAcks};
-use rand::Rng;
 use std::time::Duration;
 
 pub fn produce() {
-    let mut producer = Producer::from_hosts(vec!["0.0.0.0:9092".to_owned()])
+    let mut producer = Producer::from_hosts(vec![get_host()])
         .with_ack_timeout(Duration::from_secs(1))
         .with_required_acks(RequiredAcks::One)
         .create()
         .unwrap();
 
-    // get random number
-    let mut rng = rand::thread_rng();
-    let v: u8 = rng.gen();
-    println!("v: {}", v);
+    let d = Data::new();
 
-    println!("producing message...");
+    println!("producing message... id:{}", d.id);
 
-    let mut buf = String::with_capacity(2);
-    let val = encode(v, &mut buf);
-    producer.send(&Record::from_value("test", val)).unwrap();
-    buf.clear();
+    let val = encode(&d);
+    producer.send(&Record::from_value(TOPIC, val)).unwrap();
 }
