@@ -1,18 +1,18 @@
 use serde::{Deserialize, Serialize};
 use serde_json;
 
-pub fn encode<T>(val: &T) -> Vec<u8>
+pub fn encode<T>(val: &T) -> Result<Vec<u8>, serde_json::Error>
 where
     T: Serialize,
 {
-    serde_json::to_string(val).unwrap().as_bytes().to_vec()
+    Ok(serde_json::to_string(val)?.as_bytes().to_vec())
 }
 
-pub fn decode<'a, T>(val: &'a [u8]) -> T
+pub fn decode<'a, T>(val: &'a [u8]) -> Result<T, serde_json::Error>
 where
     T: Deserialize<'a>,
 {
-    serde_json::from_slice(val).unwrap()
+    Ok(serde_json::from_slice(val)?)
 }
 
 #[allow(unused_imports)]
@@ -24,9 +24,9 @@ mod tests {
         let data = Data::new();
         println!("original\n{}", data);
 
-        let encoded_data = encode(&data);
+        let encoded_data = encode(&data).unwrap();
         println!("encoded\n{:?}", encoded_data);
-        let decoded_data: Data = decode(&encoded_data);
+        let decoded_data: Data = decode(&encoded_data).unwrap();
         println!("decoded\n{}", decoded_data);
 
         assert_eq!(decoded_data.name, data.name);

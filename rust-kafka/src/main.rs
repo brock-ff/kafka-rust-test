@@ -5,15 +5,18 @@ mod data;
 mod encode;
 mod produce;
 
-use consume::consume;
+use consume::do_consume;
 use produce::produce;
 use std::thread;
 
-fn main() {
+fn main() -> Result<(), std::io::Error> {
     println!("Hello, world!");
     thread::spawn(move || loop {
         thread::sleep(std::time::Duration::from_millis(1000));
-        produce();
+        produce(data::Key::MintErc20)
+            .map_err(|_e| std::io::Error::from(std::io::ErrorKind::InvalidInput))
+            .unwrap_or(());
     });
-    consume();
+    do_consume();
+    Ok(())
 }
