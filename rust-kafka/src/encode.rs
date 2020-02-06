@@ -1,8 +1,10 @@
-use crate::data::Data;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json;
 
-pub fn encode<'a>(val: &'a Data) -> Vec<u8> {
+pub fn encode<T>(val: &T) -> Vec<u8>
+where
+    T: Serialize,
+{
     serde_json::to_string(val).unwrap().as_bytes().to_vec()
 }
 
@@ -13,9 +15,10 @@ where
     serde_json::from_slice(val).unwrap()
 }
 
+#[allow(unused_imports)]
 mod tests {
-    #[allow(unused_imports)]
-    use super::{decode, encode, Data};
+    use super::{decode, encode};
+    use crate::data::Data;
     #[test]
     pub fn it_encodes_and_decodes() {
         let data = Data::new();
