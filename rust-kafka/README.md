@@ -9,15 +9,15 @@ What each file does, and how to adapt it to other systems.
 ### `main.rs`
 
 1. Runs a loop in its own thread that publishes a new Data object to kafka with random contents, once per second.
-2. Runs a loop in the main thread to consume whatever's been published to kafka every 200ms.
+2. Runs a loop in the main thread to consume whatever's been published to kafka.
 
 ### `produce.rs`
 
-Produces (or publishes) some data to kafka. `produce` accepts a key and a value. Data must be serialized with `encode::encode`.
+Produces (or "publishes") some data to kafka. `produce` accepts a key and a value. Params must implement `serde::{Deserialize, Serialize}`.
 
 ### `consume.rs`
 
-Consumes (or subscribes to) data from kafka.
+Consumes (or "subscribes to") data from kafka.
 
 `consume` accepts one parameter (a Consumer object) and consumes the contents of kafka's queue ONCE. Note that we don't return the actual value(s) that we retrieved, only a pass/fail `Ok(()) or Err(...)`. We don't return the values because there may not be any, and trying to pass those values around could become very spaghetti.
 
@@ -49,7 +49,7 @@ A simple struct that holds a couple different fields. Allows us to demonstrate w
 
 ### `encode.rs`
 
-Contains functions which are used for serializing (`encode`) and deserializing (`decode`) our data objects (both Key and Data and anything else that implements serde::{Deserialize, Serialize}). These functions must be used to pass data to `produce` and `consume`.
+Contains functions which are used for serializing (`encode`) and deserializing (`decode`) our data objects (both Key and Data and anything else that implements `serde::{Deserialize, Serialize}`). These functions must be used in `produce` and `consume` to switch between rust types (for us) and byte-arrays (for kafka).
 
 ### `common.rs`
 
